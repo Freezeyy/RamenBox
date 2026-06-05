@@ -1,30 +1,25 @@
 import { useNavigate } from "react-router-dom";
+import AppLayout from "./components/AppLayout";
+import "./styles.css";
 
 export default function QRPage() {
   const navigate = useNavigate();
 
   return (
-    <div style={{ textAlign: "center", padding: 50 }}>
-      <h2>Scan to Pay</h2>
-      <img 
-        src="/images/qr-code.jpeg" 
-        alt="Payment QR" 
-        style={{ width: 800, height: 1000, margin: 20 }} 
-      />
-      <br />
-      <button 
-        onClick={() => navigate("/")} 
-        style={{
-          padding: "12px 20px",
-          fontSize: "16px",
-          borderRadius: "10px",
-          background: "#222",
-          color: "white",
-          cursor: "pointer"
-        }}
-      >
-        Back to Cashier
-      </button>
-    </div>
+    <AppLayout title="QR Payment">
+      <section className="qr-screen">
+        <div className="qr-copy">
+          <p className="eyebrow">Static scan-to-pay</p>
+          <h3>Scan to Pay</h3>
+          <p>Show this screen to the customer when they select QR payment.</p>
+          <button className="secondary-action" type="button" onClick={() => navigate("/")}>
+            Back to Cashier
+          </button>
+        </div>
+        <div className="qr-frame">
+          <img src="/images/qr-code.jpeg" alt="Payment QR code" />
+        </div>
+      </section>
+    </AppLayout>
   );
 }
