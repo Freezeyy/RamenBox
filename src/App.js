@@ -46,9 +46,19 @@ export default function App() {
 
   const stockFor = (item) => Number(stock?.[item.inventoryId] ?? 0);
 
+  const cartCountFor = (inventoryId) =>
+    cart.filter((line) => line.inventoryId === inventoryId).length;
+
+  const remainingStock = (item) => stockFor(item) - cartCountFor(item.inventoryId);
+
   const addToCart = (item) => {
-    if (stockFor(item) <= 0) {
-      alert(`${item.name} is out of stock`);
+    const remaining = remainingStock(item);
+    if (remaining <= 0) {
+      alert(
+        stockFor(item) <= 0
+          ? `${item.name} is out of stock`
+          : `Only ${stockFor(item)} ${item.name} available (${cartCountFor(item.inventoryId)} already in cart)`
+      );
       return;
     }
     setCart([...cart, item]);
@@ -148,6 +158,8 @@ export default function App() {
               price={p.price}
               image={p.image}
               stock={stockFor(p)}
+              remaining={remainingStock(p)}
+              inCart={cartCountFor(p.inventoryId)}
               threshold={thresholds[p.inventoryId] ?? p.threshold}
               onAdd={() => addToCart(p)}
             />

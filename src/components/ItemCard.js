@@ -1,7 +1,17 @@
-export default function ItemCard({ name, price, image, stock, threshold, onAdd }) {
-  const qty = Number(stock ?? 0);
-  const isOut = qty <= 0;
-  const isLow = !isOut && qty <= Number(threshold ?? 5);
+export default function ItemCard({
+  name,
+  price,
+  image,
+  stock,
+  remaining,
+  inCart,
+  threshold,
+  onAdd,
+}) {
+  const total = Number(stock ?? 0);
+  const left = Number(remaining ?? total);
+  const isOut = left <= 0;
+  const isLow = !isOut && total <= Number(threshold ?? 5);
   const statusClass = isOut ? "out" : isLow ? "low" : "";
   const statusText = isOut ? "Out" : isLow ? "Low" : "OK";
 
@@ -15,7 +25,8 @@ export default function ItemCard({ name, price, image, stock, threshold, onAdd }
         </div>
         <div className="status-row">
           <span className={`pill ${statusClass}`}>
-            {statusText} · stock: {qty}
+            {statusText} · {left} left
+            {inCart > 0 ? ` (${inCart} in cart)` : ""}
           </span>
           <button
             type="button"

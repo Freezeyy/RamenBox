@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { collection, doc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../auth/AuthContext";
 import { INVENTORY_DOCS } from "../inventory/inventoryConfig";
@@ -15,18 +15,18 @@ export default function InventoryPage() {
   useEffect(() => {
     const ensure = async () => {
       await Promise.all(
-        INVENTORY_DOCS.map((it) =>
-          setDoc(
-            doc(db, "inventory", it.id),
-            {
+        INVENTORY_DOCS.map(async (it) => {
+          const ref = doc(db, "inventory", it.id);
+          const snap = await getDoc(ref);
+          if (!snap.exists()) {
+            await setDoc(ref, {
               name: it.name,
               quantity: 0,
               lowStockThreshold: it.lowStockThreshold,
               updatedAt: serverTimestamp(),
-            },
-            { merge: true }
-          )
-        )
+            });
+          }
+        })
       );
     };
 
